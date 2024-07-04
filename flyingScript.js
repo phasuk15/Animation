@@ -6,30 +6,35 @@ const ctx = canvas.getContext('2d');
 CANVAS_WIDTH = canvas.width = 500;
 CANVAS_HEIGHT = canvas.height = 1000;
 
-const numberOfEnemies = 100;
+const numberOfEnemies = 20;
 const enemiesArray = [];
-
-const enemyImage= new Image();
-enemyImage.src = 'enemy1.png';
 
 let gameFrame = 0;
 
 class Enemy {
     constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.speed = Math.random() * 4 -2;
-        this.spriteWidth = 293;
-        this.spriteHeight = 155;
+        this.image = new Image();
+        this.image.src = 'enemy2.png'
+        this.speed = Math.random() * 4 + 1;
+        this.spriteWidth = 266;
+        this.spriteHeight = 188;
         //width and height is changed so that image is not stretched
-        this.width = this.spriteWidth/2.5
-        this.height = this.spriteHeight/2.5;
+        this.width = this.spriteWidth/2;
+        this.height = this.spriteHeight/2;
+        this.x = Math.random() * (canvas.width - this.width);
+        this.y = Math.random() * (canvas.height - this.height);
         this.frame = 0;
         this.flapSpeed = Math.floor(Math.random() * 3 + 1);
+        this.angle = 0;
+        this.angleSpeed = Math.random() * 0.2;
+        this.curve = Math.random() * 7;
     }
     update() {
-        this.x += this.speed;
-        this.y += this.speed;
+        this.x -= this.speed;
+        if (this.x + this.width < 0) this.x = canvas.width;
+        //up and down movement
+        this.y += this.curve * Math.sin(this.angle);
+        this.angle += this.angleSpeed;
         //moves to next frame only if loop is divisible by flapSpeed
         if (gameFrame % this.flapSpeed === 0) {
             //if frame = 4 then frame = 0, else frame++
@@ -37,8 +42,8 @@ class Enemy {
         }
     }
     draw() {
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
-        ctx.drawImage(enemyImage, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+        // ctx.strokeRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
     }
 };
 
